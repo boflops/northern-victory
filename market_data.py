@@ -1,4 +1,5 @@
 from quadriga import QuadrigaClient
+import numpy
 import settings
 
 client = QuadrigaClient(

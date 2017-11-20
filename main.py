@@ -15,7 +15,8 @@ import market_data
 import analysis
 
 quadriga_summary = market_data.QuadrigaSummary()
-print(quadriga_summary.timestamp)
+order_book = market_data.OrderBook()
+price_history = analysis.History()
 
 def main(argv):
     period = 10
@@ -26,8 +27,15 @@ def main(argv):
         ##this code is executed every period
 
         quadriga_summary.update()
-        print(quadriga_summary.timestamp)
+        order_book.update()
 
+        indexprice = fiat.convert('USD','CAD', cc.get_price(settings.CURRENCY.upper(),curr='USD',full=True)['RAW'][settings.CURRENCY.upper()]['USD']['PRICE'])
+        print(indexprice)
+
+        print(order_book.asks[0])
+
+        price_history.appendPrice(indexprice)
+        print('MA: ', price_history.getMovingAverage())
         time.sleep(period) ##rest 10 seconds
 
 
