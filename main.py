@@ -22,22 +22,32 @@ def main(argv):
     period = 10
 
     while True:
-
-        print('10 second period started')
+        print('#####')
+        print('#####')
         ##this code is executed every period
 
         quadriga_summary.update()
         order_book.update()
 
         indexprice = fiat.convert('USD','CAD', cc.get_price(settings.CURRENCY.upper(),curr='USD',full=True)['RAW'][settings.CURRENCY.upper()]['USD']['PRICE'])
-        print(indexprice)
-
-        print(order_book.asks[0])
-
         price_history.appendPrice(indexprice)
-        print('MA: ', price_history.getMovingAverage())
-        time.sleep(period) ##rest 10 seconds
 
+        #if(indexprice > price_history.getMovingAverage()):
+        #    print('above total MA')
+        #    if(indexprice > price_history.getMovingAverageForMinutes(5)):
+        #        print('also above 5 min MA')
+
+        print('available price: ', order_book.asks[0][0])
+        print('index price: ', indexprice)
+        analysis.checkIfGoodDeal(float(order_book.asks[0][0]), indexprice, True)
+
+        print('--')
+
+        print('available price: ', order_book.bids[0][0])
+        print('index price: ', indexprice)
+        analysis.checkIfGoodDeal(float(order_book.bids[0][0]), indexprice, False)
+
+        time.sleep(period) ##rest 10 seconds
 
 if __name__ == "__main__":
     main(sys.argv[1:])

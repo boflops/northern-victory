@@ -1,3 +1,5 @@
+import settings
+
 class History:
     def __init__(self):
         self.recentprices = []
@@ -18,6 +20,17 @@ class History:
             return
 
         ##slice list to include only the prices from end of the list for the specified no of minutes
-        fiveminlist = self.recentprices[len(self.recentprices) - (periods + 1):len(self.recentprices)-1]
+        fiveminlist = self.recentprices[len(self.recentprices) - (periods) - 1:len(self.recentprices)-1]
 
         return sum(fiveminlist) / periods ##return MA over this period
+
+def checkIfGoodDeal(availablePrice, indexedPrice, bull):
+    if(bull):
+        div = indexedPrice / availablePrice
+        if(div > settings.TRIGGER_DIFFERENCE):
+            print('buy from this sucker')
+
+    else:
+        div = availablePrice / indexedPrice
+        if(div > settings.TRIGGER_DIFFERENCE):
+            print('sell to this sucker')
