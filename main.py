@@ -35,35 +35,33 @@ def main(argv):
         priceticker = fiat.convert('USD','CAD', bf_client.ticker(settings.CURRENCY + 'usd')['mid'])
         price_history.appendPrice(priceticker)
 
-        print('-----')
+        ma5 = price_history.getMovingAverageForMinutes(1)
 
-        ##buying oppertunity section
-        print('buying oppertunity?')
+        ##BUY
         if(priceticker > price_history.getMovingAverage()):
             print('under total MA, price increasing..')
-            if(type(price_history.getMovingAverageForMinutes(5)) is None):
-                print('we have ma5..')
+            if(ma5 is None):
+                print('no ma5 YET..')
             else:
+                print('ma5: ', ma5)
                 if(analysis.checkIfGoodDeal(float(order_book.asks[0][0]), priceticker, True)):
-                    print("we are gonna buy this one: ", order_book.asks[0][0])
+                    print("buy this: ", order_book.asks[0])
                     print('its a good deal as the bitfinex price is: ', priceticker)
 
-        print('-----')
-
-        ##buying oppertunity section
-        print('selling oppertunity?')
-
+        ##SELL
         if(priceticker < price_history.getMovingAverage()):
             print('under total MA, price decreasing..')
-            if(type(price_history.getMovingAverageForMinutes(5)) is None):
-                print('no ma5 yet')
+            if(ma5 is None):
+                print('no MA5 yet..')
             else:
-                print('we have ma5..')
+                print('ma5: ', ma5)
                 if(analysis.checkIfGoodDeal(float(order_book.bids[0][0]), priceticker, False)):
-                    print("we are gonna buy this one: ", order_book.bids[0][0])
+                    print("sell this: ", order_book.bids[0])
                     print('its a good deal as the bitfinex price is: ', priceticker)
 
-        time.sleep(period) ##rest 10 seconds
+
+        time.sleep(period) ##rest 10 seconds (end of loop)
+
 
 if __name__ == "__main__":
     main(sys.argv[1:])
