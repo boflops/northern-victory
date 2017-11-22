@@ -18,8 +18,7 @@ class History:
             print("program hasnt been running long enough to get this MA")
             return None
         ##slice list to include only the prices from end of the list for the specified no of minutes
-        fiveminlist = self.recentprices[len(self.recentprices) - (periods) - 1:len(self.recentprices)-1]
-
+        fiveminlist = self.recentprices[len(self.recentprices) - (periods):len(self.recentprices)]
         return sum(fiveminlist) / periods ##return MA over this period
 
 def checkIfGoodDeal(availablePrice, indexedPrice, bull):
