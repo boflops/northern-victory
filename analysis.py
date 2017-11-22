@@ -14,11 +14,9 @@ class History:
 
         ##convert minutes into 10 second periods
         periods = minutes * 6
-
-        if(len(self.recentprices) < periods): ##havent been running long enough to get this data
+        if(len(self.recentprices) < int(periods)): ##havent been running long enough to get this data
             print("program hasnt been running long enough to get this MA")
-            return
-
+            return None
         ##slice list to include only the prices from end of the list for the specified no of minutes
         fiveminlist = self.recentprices[len(self.recentprices) - (periods) - 1:len(self.recentprices)-1]
 
@@ -29,8 +27,12 @@ def checkIfGoodDeal(availablePrice, indexedPrice, bull):
         div = indexedPrice / availablePrice
         if(div > settings.TRIGGER_DIFFERENCE):
             print('buy from this sucker')
+            return True
+        return False
 
     else:
         div = availablePrice / indexedPrice
         if(div > settings.TRIGGER_DIFFERENCE):
             print('sell to this sucker')
+            return True
+        return False

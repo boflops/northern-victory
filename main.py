@@ -3,8 +3,10 @@ import time
 import datetime
 import pprint ##formatted printing
 
-##get live crypto index prices
-import cryptocompare as cc
+##bitfinex is market driver in USD, use this as price reference
+import bitfinex
+bf_client = bitfinex.Client()
+
 
 import forex_python.converter as fiat
 ##use USD and convert to CAD instead of directly using CAD as the index price, as more volume in USD means its more represenative of the changing market
@@ -23,29 +25,43 @@ def main(argv):
 
     while True:
         print('#####')
-        print('#####')
         ##this code is executed every period
 
+        ##update quariga trading summary and the quadriga order book
         quadriga_summary.update()
         order_book.update()
 
-        indexprice = fiat.convert('USD','CAD', cc.get_price(settings.CURRENCY.upper(),curr='USD',full=True)['RAW'][settings.CURRENCY.upper()]['USD']['PRICE'])
-        price_history.appendPrice(indexprice)
+        ##update price from bitfinex, convert to CAD and append to the price history list
+        priceticker = fiat.convert('USD','CAD', bf_client.ticker(settings.CURRENCY + 'usd')['mid'])
+        price_history.appendPrice(priceticker)
 
-        #if(indexprice > price_history.getMovingAverage()):
-        #    print('above total MA')
-        #    if(indexprice > price_history.getMovingAverageForMinutes(5)):
-        #        print('also above 5 min MA')
+        print('-----')
 
-        print('available price: ', order_book.asks[0][0])
-        print('index price: ', indexprice)
-        analysis.checkIfGoodDeal(float(order_book.asks[0][0]), indexprice, True)
+        ##buying oppertunity section
+        print('buying oppertunity?')
+        if(priceticker > price_history.getMovingAverage()):
+            print('under total MA, price increasing..')
+            if(type(price_history.getMovingAverageForMinutes(5)) is None):
+                print('we have ma5..')
+            else:
+                if(analysis.checkIfGoodDeal(float(order_book.asks[0][0]), priceticker, True)):
+                    print("we are gonna buy this one: ", order_book.asks[0][0])
+                    print('its a good deal as the bitfinex price is: ', priceticker)
 
-        print('--')
+        print('-----')
 
-        print('available price: ', order_book.bids[0][0])
-        print('index price: ', indexprice)
-        analysis.checkIfGoodDeal(float(order_book.bids[0][0]), indexprice, False)
+        ##buying oppertunity section
+        print('selling oppertunity?')
+
+        if(priceticker < price_history.getMovingAverage()):
+            print('under total MA, price decreasing..')
+            if(type(price_history.getMovingAverageForMinutes(5)) is None):
+                print('no ma5 yet')
+            else:
+                print('we have ma5..')
+                if(analysis.checkIfGoodDeal(float(order_book.bids[0][0]), priceticker, False)):
+                    print("we are gonna buy this one: ", order_book.bids[0][0])
+                    print('its a good deal as the bitfinex price is: ', priceticker)
 
         time.sleep(period) ##rest 10 seconds
 
