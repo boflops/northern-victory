@@ -37,7 +37,6 @@ class History:
         top = 0
         bot = 0
         for i in range (len(sublist)):
-            print(i)
             top += sublist[i] * (1 - a(i))**(i - 1)
             bot += (1- a(i))**(i - 1)
         return top / bot ##return EMA over this period
@@ -49,13 +48,11 @@ def checkIfGoodDeal(availablePrice, indexedPrice, bull):
     if(bull):
         div = indexedPrice / availablePrice
         if(div > settings.TRIGGER_DIFFERENCE):
-            print('buy from this sucker')
             return True
         return False
 
     else:
         div = availablePrice / indexedPrice
         if(div > settings.TRIGGER_DIFFERENCE):
-            print('sell to this sucker')
             return True
         return False

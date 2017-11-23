@@ -37,13 +37,17 @@ def main(argv):
 
         ma5 = price_history.getMovingAverageForMinutes(1)
 
+        ema20 = price_history.getExpMovingAverageForMinutes(1)
+
+        print("MA5: ", ma5)
+        print("EMA: ", ema20)
         ##BUY
         if(priceticker > price_history.getMovingAverage()):
-            print('under total MA, price increasing..')
+            print('avove total MA, price increasing..')
             if(ma5 is None):
                 print('no ma5 YET..')
             else:
-                print('ma5: ', ma5)
+                #print('ma5: ', ma5)
                 if(analysis.checkIfGoodDeal(float(order_book.asks[0][0]), priceticker, True)):
                     print("buy this: ", order_book.asks[0])
                     print('its a good deal as the bitfinex price is: ', priceticker)
@@ -54,7 +58,7 @@ def main(argv):
             if(ma5 is None):
                 print('no MA5 yet..')
             else:
-                print('ma5: ', ma5)
+                #print('ma5: ', ma5)
                 if(analysis.checkIfGoodDeal(float(order_book.bids[0][0]), priceticker, False)):
                     print("sell this: ", order_book.bids[0])
                     print('its a good deal as the bitfinex price is: ', priceticker)
